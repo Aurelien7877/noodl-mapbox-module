@@ -126,10 +126,11 @@ function DivComponent(props) {
 			}
 			this.popUp=popUp;
 
-			function styleChange() {
-				var satellite = 'mapbox://styles/mapbox/satellite-v9'
-				this.inputs.mapboxStyle=satellite
+			function styleChange(mapboxStyle) {
+
+				this.inputs.mapboxStyle= 'mapbox://styles/mapbox/satellite-v9'
 			}
+			this.styleChange = styleChange;
 
 			//Fonction pour centrer
 			function flyTo(long, lat) {
@@ -200,7 +201,7 @@ function DivComponent(props) {
 			displayName: 'Change to satellite view',
 			group: 'Actions',
 			signal() {
-				this.styleChange();
+				this.styleChange(this.inputs.mapboxStyle);
 			}
 		},
 	},
