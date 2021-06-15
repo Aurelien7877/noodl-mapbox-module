@@ -181,6 +181,14 @@ function DivComponent(props) {
 				this.flyTo(this.inputs.longitude, this.inputs.latitude);
 			}
 		},
+
+		popUp: {
+			displayName: 'Popup Coords',
+			group: 'Actions',
+			signal() {
+				this.popUp(this.inputs.longitude,this.inputs.latitude);
+			}
+		},
 	},
 
 	outputs: {
