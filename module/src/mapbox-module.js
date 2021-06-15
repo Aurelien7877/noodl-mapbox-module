@@ -1,49 +1,46 @@
 const Noodl = require('@noodl/noodl-sdk');
-
 import {useRef, useEffect} from 'react';
-
 import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css'; //import the css using webpack
+import 'mapbox-gl/dist/mapbox-gl.css';
+import * as turf from '@turf/turf'
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
-
+//import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
 //defaults to 100% width and height, so wrap in a Group in Noodl to get control over margins, dimensions, etc
 function DivComponent(props) {
-
 	const ref = useRef(null);
-	  
+
 	useEffect(() => {
 		props.onDidMount(ref.current);
 		return () => props.onWillUnmount(ref.current);
 	});
-
 	const {style, ...otherProps} = props;
-
 	return <div {...otherProps} style={{...{width: '100%', height: '100%'}, ...style}} ref={ref} />;
-}
+	}
 
-const MapboxNode = Noodl.defineReactNode({
-	name: 'Mapbox Map',
-	category: 'Mapbox',
-	getReactComponent() {
-		return DivComponent;
+	const MapboxNode = Noodl.defineReactNode({
+		name: 'Mapbox Map',
+		category: 'Mapbox',
+		getReactComponent() {
+			return DivComponent;
 	},
-	initialize() {
 
+	initialize() {
 		//wait for the div to mount before we create the map instance
 		this.props.onDidMount = domElement => {
 			this.initializeMap(domElement);
 		};
-
 		this.props.onWillUnmount = () => {
 			this.map.remove();
 		}
 	},
+
 	methods: {
+
 		initializeMap(domElement) {
-
 			const accessToken = Noodl.getProjectSettings().mapboxAccessToken;
-
 			if(!accessToken) {
 				//present a warning in the editor
 				this.sendWarning('access-token-missing', 'No access token. Please specify one in project settings and reload');
@@ -52,34 +49,78 @@ const MapboxNode = Noodl.defineReactNode({
 				//clear any previous warnings, if any
 				this.clearWarnings();
 			}
-			
-			mapboxgl.accessToken = accessToken;
 
+			mapboxgl.accessToken = accessToken;
 			const map = new mapboxgl.Map({
 				container: domElement,
 				style: this.inputs.mapboxStyle || 'mapbox://styles/mapbox/streets-v11',
-				center: [this.inputs.longitude || 0, this.inputs.latitute || 0],
+				center: [this.inputs.longitude || 0, this.inputs.latitude || 0],
 				zoom: this.inputs.zoom || 0,
 				interactive: this.inputs.interactive
 			});
-
 			this.map = map;
+
+			const draw = new MapboxDraw({
+			displayControlsDefault: false,
+			controls: {
+			polygon: true,
+			trash: true
+			},
+			defaultMode: 'draw_polygon'
+			});
+			map.addControl(draw);
+
+			map.on('draw.create', updateArea);
+			map.on('draw.delete', updateArea);
+			map.on('draw.update', updateArea);
+
+			function updateArea(e) {
+					var data = draw.getAll();
+					var answer = document.getElementById('calculated-area');
+					if (data.features.length > 0) {
+								var area = turf.area(data);
+								// restrict to area to 2 decimal points
+								var rounded_area = Math.round(area * 100) / 100;
+								answer.innerHTML =
+								'<p><strong>' +
+								rounded_area +
+								'</strong></p><p>square meters</p>';
+							} else {
+							answer.innerHTML = '';
+							if (e.type !== 'draw.delete')
+							alert('Use the draw tools to draw a polygon!');
+							}
+					}
 
 			map.on('move', () => {
 				this.setOutputs({
 					longitude: map.getCenter().lng.toFixed(4),
-					latitute: map.getCenter().lat.toFixed(4),
+					latitude: map.getCenter().lat.toFixed(4),
 					zoom: map.getZoom().toFixed(2)
 				})
 			});
 
-			
 			this.geolocate = new mapboxgl.GeolocateControl({
 				positionOptions: {
 					enableHighAccuracy: true
 				},
 				trackUserLocation: true
 			});
+
+			function addPin(long, lat) {
+				var marker = new mapboxgl.Marker()
+					.setLngLat([long, lat])
+					.addTo(this.map);
+			};
+			this.addPin = addPin;
+
+			function flyTo(long, lat) {
+				this.map.flyTo({
+					center: [long, lat],
+					essential: true
+					});
+			}
+			this.flyTo = flyTo;
 
 			map.addControl(this.geolocate);
 
@@ -88,6 +129,7 @@ const MapboxNode = Noodl.defineReactNode({
 			});
 		}
 	},
+
 	inputs: {
 		//options
 		mapboxStyle: {
@@ -100,29 +142,46 @@ const MapboxNode = Noodl.defineReactNode({
 
 		//coordinates and zoom
 		longitude: {displayName: 'Longitude', type: 'number', group: 'Coordinates', default: 0},
-		latitute: {displayName: 'Latitude', type: 'number', group: 'Coordinates', default: 0},
+		latitude: {displayName: 'Latitude', type: 'number', group: 'Coordinates', default: 0},
 		zoom: {displayName: 'Zoom', type: 'number', group: 'Coordinates', default: 0},
 	},
+
 	signals: {
 		centerOnUser: {
 			displayName: 'Center on user',
 			group: 'Actions',
 			signal() {
 				this.geolocate && this.geolocate.trigger();
+			},
+		},
+		addPin: {
+			displayName: 'Add pin to map',
+			group: 'Actions',
+			signal() {
+				this.addPin(this.inputs.longitude, this.inputs.latitude);
 			}
-		}
+		},
+
+		flyTo: {
+			displayName: 'Pan to location',
+			group: 'Actions',
+			signal() {
+				this.flyTo(this.inputs.longitude, this.inputs.latitude);
+			}
+		},
 	},
+
 	outputs: {
 		longitude: {displayName: 'Longitude', type: 'number', group: 'Coordinates'},
-		latitute: {displayName: 'Latitude', type: 'number', group: 'Coordinates'},
+		latitude: {displayName: 'Latitude', type: 'number', group: 'Coordinates'},
 		zoom: {displayName: 'Longitude', type: 'number', group: 'Coordinates'},
 		mapLoaded: {displayName: 'Map Loaded', type: 'signal'}
 	},
+
 	outputProps: {
 		onClick: {type: 'signal', displayName: 'Click'}
 	}
 })
-
 
 Noodl.defineModule({
     reactNodes: [
@@ -137,6 +196,6 @@ Noodl.defineModule({
 		plug: 'input'
 	}],
     setup() {
-    	
+
     }
 });
