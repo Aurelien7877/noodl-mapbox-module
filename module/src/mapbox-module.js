@@ -126,9 +126,10 @@ function DivComponent(props) {
 			}
 			this.popUp=popUp;
 
-			function styleChange(mapboxStyle) {
+			//Fonction qui change le style de la carte
+			function styleChange(style) {
 
-				this.inputs.mapboxStyle= 'mapbox://styles/mapbox/satellite-v9'
+				this.inputs.mapboxStyle='mapbox://styles/mapbox/satellite-v9'
 			}
 			this.styleChange = styleChange;
 
@@ -140,6 +141,57 @@ function DivComponent(props) {
 					});
 			}
 			this.flyTo = flyTo;
+
+			//Fonction pour naviguer fleche
+			function navigate() {
+				// pixels the map pans when the up or down arrow is clicked
+				var deltaDistance = 100;
+
+				// degrees the map rotates when the left or right arrow is clicked
+				var deltaDegrees = 25;
+			
+				function easing(t) {
+					return t * (2 - t);
+				}
+			
+				map.on('load', function () {
+					map.getCanvas().focus();
+			
+					map.getCanvas().addEventListener(
+						'keydown',
+						function (e) {
+							e.preventDefault();
+							if (e.which === 38) {
+								// up
+								map.panBy([0, -deltaDistance], {
+									easing: easing
+								});
+							} else if (e.which === 40) {
+								// down
+								map.panBy([0, deltaDistance], {
+									easing: easing
+								});
+							} else if (e.which === 37) {
+								// left
+								map.easeTo({
+									bearing: map.getBearing() - deltaDegrees,
+									easing: easing
+								});
+							} else if (e.which === 39) {
+								// right
+								map.easeTo({
+									bearing: map.getBearing() + deltaDegrees,
+									easing: easing
+								});
+							}
+						},
+						true
+					);
+				})
+			}
+			this.navigate=navigate;
+
+
 
 			map.addControl(this.geolocate);
 
@@ -202,6 +254,14 @@ function DivComponent(props) {
 			group: 'Actions',
 			signal() {
 				this.styleChange(this.inputs.mapboxStyle);
+			}
+		},
+
+		navigate: {
+			displayName: 'naviguate with -> <-',
+			group: 'Actions',
+			signal() {
+				this.navigate();
 			}
 		},
 	},
