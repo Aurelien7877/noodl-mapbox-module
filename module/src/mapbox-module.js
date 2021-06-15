@@ -100,6 +100,7 @@ function DivComponent(props) {
 				})
 			});
 
+			//Fonction de géolocalisation
 			this.geolocate = new mapboxgl.GeolocateControl({
 				positionOptions: {
 					enableHighAccuracy: true
@@ -107,13 +108,24 @@ function DivComponent(props) {
 				trackUserLocation: true
 			});
 
+			//Fonction pour ajouter un pin
 			function addPin(long, lat) {
 				var marker = new mapboxgl.Marker()
 					.setLngLat([long, lat])
 					.addTo(this.map);
 			};
 			this.addPin = addPin;
+			
+			//Fonction pour faire apparaitre un PopUp
+			function popUp(long,lat) {
+				var fenetre = new mapboxgl.Popup()
+				.setLngLat([long,lat])
+				.setHTML("<h1>Coord. : "+ long +" ," + lat+ "</h1>")
+				.addTo(this.map);
+			}
+			this.popUp=popUp;
 
+			//Fonction pour centrer
 			function flyTo(long, lat) {
 				this.map.flyTo({
 					center: [long, lat],
