@@ -9,6 +9,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'*/
 //import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
 //defaults to 100% width and height, so wrap in a Group in Noodl to get control over margins, dimensions, etc
+
 function DivComponent(props) {
 	const ref = useRef(null);
 
