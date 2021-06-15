@@ -2,9 +2,9 @@ const Noodl = require('@noodl/noodl-sdk');
 import {useRef, useEffect} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import * as turf from '@turf/turf'
+/*import * as turf from '@turf/turf'
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'*/
 
 //import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
@@ -60,7 +60,7 @@ function DivComponent(props) {
 			});
 			this.map = map;
 
-			const draw = new MapboxDraw({
+			/*const draw = new MapboxDraw({
 			displayControlsDefault: false,
 			controls: {
 			polygon: true,
@@ -90,7 +90,7 @@ function DivComponent(props) {
 							if (e.type !== 'draw.delete')
 							alert('Use the draw tools to draw a polygon!');
 							}
-					}
+				}*/
 
 			map.on('move', () => {
 				this.setOutputs({
