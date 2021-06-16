@@ -206,12 +206,7 @@ function DivComponent(props) {
 			}
 			this.flyTo = flyTo;
 
-			//Fonction pour zommer, dézoomrer et rotation
-			function controlMenu() {
-				// Add zoom and rotation controls to the map.
-				map.addControl(new mapboxgl.NavigationControl());
-			}
-			this.controlMenu=controlMenu;
+
 
 			//Fonction pour naviguer fleche
 			function navigate() {
@@ -263,7 +258,7 @@ function DivComponent(props) {
 			this.navigate=navigate;
 
 
-			
+			map.addControl(new mapboxgl.NavigationControl());
 			map.addControl(this.geolocate);
 
 			map.on('load', () => {
