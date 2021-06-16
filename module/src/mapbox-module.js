@@ -331,14 +331,6 @@ function DivComponent(props) {
 			}
 		},
 
-		controlMenu: {
-			displayName: '',
-			group: 'Actions',
-			signal() {
-				this.addPin(this.inputs.longitude, this.inputs.latitude);
-			}
-		},
-
 		navigate: {
 			displayName: 'naviguate with -> <-',
 			group: 'Actions',
