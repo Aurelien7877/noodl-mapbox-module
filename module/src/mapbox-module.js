@@ -124,7 +124,7 @@ function DivComponent(props) {
 				map.on('draw.create', updateArea);
 				map.on('draw.delete', updateArea);
 				map.on('draw.update', updateArea);*/
-				const draw = new MapboxDraw({
+				var draw = new MapboxDraw({
 					userProperties: true,
 					displayControlsDefault: false,
 					styles: DrawStyles,
@@ -136,7 +136,7 @@ function DivComponent(props) {
 				  
 				  // when mode drawing should be activated
 				  draw.changeMode("draw_rectangle", {
-					areaLimit: 5 * 1_000_000, // 5 km2, optional
+					areaLimit: 10 * 1_000_000, // 5 km2, optional
 					escapeKeyStopsDrawing: true, // default true
 					allowCreateExceeded: false, // default false
 					exceedCallsOnEachMove: false, // default false
@@ -146,6 +146,7 @@ function DivComponent(props) {
 			}
 			this.drawPolygon=drawPolygon;
 	
+			//Fonction d'update pour polygone
 			function updateArea(e) {
 				var data = draw.getAll();
 				var answer = document.getElementById('calculated-area');
