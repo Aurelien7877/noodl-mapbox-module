@@ -136,7 +136,7 @@ function DivComponent(props) {
 				  
 				  // when mode drawing should be activated
 				  draw.changeMode("draw_rectangle", {
-					areaLimit: 10 * 1_000_000, // 5 km2, optional
+					//areaLimit: 10 * 1_000_000, // 5 km2, optional
 					escapeKeyStopsDrawing: true, // default true
 					allowCreateExceeded: false, // default false
 					exceedCallsOnEachMove: false, // default false
