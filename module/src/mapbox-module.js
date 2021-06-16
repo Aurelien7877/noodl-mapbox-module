@@ -151,7 +151,7 @@ function DivComponent(props) {
 
 			//variable de dessin de forme
 			var draw = new MapboxDraw({
-				displayControlsDefault: false,
+				displayControlsDefault: true,
 				controls: {
 					polygon: true,
 					trash: true
@@ -283,6 +283,10 @@ function DivComponent(props) {
 			map.on('load', () => {
 				this.sendSignalOnOutput("mapLoaded");
 			});
+			map.on('load', function() {
+				draw.add({});
+			  });
+			  
 		}
 	},
 
