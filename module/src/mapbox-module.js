@@ -6,7 +6,9 @@ import * as turf from '@turf/turf'
 
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
+import DrawRectangle, {
+	DrawStyles,
+  } from "mapbox-gl-draw-rectangle-restrict-area";
 
 //import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
@@ -109,11 +111,8 @@ function DivComponent(props) {
 			}
 			this.drawPolygon=drawPolygon;*/
 			function drawPolygon() {
-				let modes = MapboxDraw.modes;
-				modes = MapboxDrawGeodesic.enable(modes);
-				const draW = new MapboxDraw({ modes });
 
-				var draw = new MapboxDraw({
+				/*var draw = new MapboxDraw({
 					displayControlsDefault: false,
 					controls: {
 						polygon: true,
@@ -124,7 +123,26 @@ function DivComponent(props) {
 				map.addControl(draw);
 				map.on('draw.create', updateArea);
 				map.on('draw.delete', updateArea);
-				map.on('draw.update', updateArea);
+				map.on('draw.update', updateArea);*/
+				const draw = new MapboxDraw({
+					userProperties: true,
+					displayControlsDefault: false,
+					styles: DrawStyles,
+					modes: Object.assign(MapboxDraw.modes, {
+					  draw_rectangle: DrawRectangle,
+					}),
+				  });
+				  map.addControl(draw);
+				  
+				  // when mode drawing should be activated
+				  draw.changeMode("draw_rectangle", {
+					areaLimit: 5 * 1_000_000, // 5 km2, optional
+					escapeKeyStopsDrawing: true, // default true
+					allowCreateExceeded: false, // default false
+					exceedCallsOnEachMove: false, // default false
+					exceedCallback: (area) => console.log("exceeded!", area), // optional
+					areaChangedCallback: (area) => console.log("updated", area), // optional
+				  });
 			}
 			this.drawPolygon=drawPolygon;
 	
