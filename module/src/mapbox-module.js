@@ -75,7 +75,6 @@ function DivComponent(props) {
 			});
 
 
-			
 			/*Essai polygone
 			function drawPolygon() {
 				this.draw = new MapboxDraw({
@@ -151,7 +150,7 @@ function DivComponent(props) {
 	
 
 			//variable de dessin de forme
-			/*var draw = new MapboxDraw({
+			var draw = new MapboxDraw({
 				displayControlsDefault: true,
 				controls: {
 					polygon: true,
@@ -183,7 +182,7 @@ function DivComponent(props) {
 					if (e.type !== 'draw.delete')
 						alert('Utilisez l outil de selection !');
 				}
-			}*/
+			}
 
 			//Fonction de géolocalisation
 			this.geolocate = new mapboxgl.GeolocateControl({
