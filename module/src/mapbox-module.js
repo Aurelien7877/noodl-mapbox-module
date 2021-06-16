@@ -108,7 +108,7 @@ function DivComponent(props) {
 			}
 			this.drawPolygon=drawPolygon;*/
 			
-			this.draw = new MapboxDraw({
+			var draw = new MapboxDraw({
 				displayControlsDefault: false,
 				controls: {
 					polygon: true,
@@ -238,7 +238,7 @@ function DivComponent(props) {
 			this.navigate=navigate;
 
 
-			map.addControl(this.draw);
+			map.addControl(draw);
 			map.addControl(this.geolocate);
 
 			map.on('load', () => {
@@ -287,7 +287,7 @@ function DivComponent(props) {
 			}
 		},
 
-		draw: {
+		draw_polygon: {
 			displayName: 'Draw a polygon',
 			group: 'Actions',
 			signal() {
