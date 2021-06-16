@@ -74,7 +74,7 @@ function DivComponent(props) {
 
 			//Essai polygone
 			function drawPolygon() {
-				var draw = new MapboxDraw({
+				this.draw = new MapboxDraw({
 					displayControlsDefault: false,
 					controls: {
 						polygon: true,
@@ -82,7 +82,7 @@ function DivComponent(props) {
 					},
 					defaultMode: 'draw_polygon'
 					});
-					map.addControl(draw);
+					map.addControl(this.draw);
 		
 					map.on('draw.create', updateArea);
 					map.on('draw.delete', updateArea);
