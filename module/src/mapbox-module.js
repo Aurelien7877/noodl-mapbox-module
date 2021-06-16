@@ -107,20 +107,21 @@ function DivComponent(props) {
 					}
 			}
 			this.drawPolygon=drawPolygon;*/
-			
-			var draw = new MapboxDraw({
-				displayControlsDefault: false,
-				controls: {
-					polygon: true,
-					trash: true
-				},
-				defaultMode: 'draw_polygon'
+			function drawPolygon() {
+				var draw = new MapboxDraw({
+					displayControlsDefault: false,
+					controls: {
+						polygon: true,
+						trash: true
+					},
+					defaultMode: 'draw_polygon'
 				});
-			
-	
-			map.on('draw.create', updateArea);
-			map.on('draw.delete', updateArea);
-			map.on('draw.update', updateArea);
+				
+				map.on('draw.create', updateArea);
+				map.on('draw.delete', updateArea);
+				map.on('draw.update', updateArea);
+			}
+			this.drawPolygon=drawPolygon;
 	
 			function updateArea(e) {
 				var data = draw.getAll();
@@ -287,11 +288,11 @@ function DivComponent(props) {
 			}
 		},
 
-		draw_polygon: {
+		drawPolygon: {
 			displayName: 'Draw a polygon',
 			group: 'Actions',
 			signal() {
-				this.draw && this.draw.trigger();
+				this.drawPolygon();
 			}
 		},
 
