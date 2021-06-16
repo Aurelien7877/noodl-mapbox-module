@@ -6,6 +6,7 @@ import * as turf from '@turf/turf'
 
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 
 //import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
@@ -108,6 +109,10 @@ function DivComponent(props) {
 			}
 			this.drawPolygon=drawPolygon;*/
 			function drawPolygon() {
+				let modes = MapboxDraw.modes;
+				modes = MapboxDrawGeodesic.enable(modes);
+				const draW = new MapboxDraw({ modes });
+
 				var draw = new MapboxDraw({
 					displayControlsDefault: false,
 					controls: {
