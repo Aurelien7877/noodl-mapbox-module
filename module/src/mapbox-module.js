@@ -74,11 +74,11 @@ function DivComponent(props) {
 
 			//Essai polygone
 			function drawPolygon() {
-				const draw = new MapboxDraw({
+				var draw = new MapboxDraw({
 					displayControlsDefault: false,
 					controls: {
-					polygon: true,
-					trash: true
+						polygon: true,
+						trash: true
 					},
 					defaultMode: 'draw_polygon'
 					});
@@ -99,11 +99,11 @@ function DivComponent(props) {
 										'<p><strong>' +
 										rounded_area +
 										'</strong></p><p>square meters</p>';
-									} else {
-									answer.innerHTML = '';
-									if (e.type !== 'draw.delete')
+							} else {
+								answer.innerHTML = '';
+								if (e.type !== 'draw.delete')
 									alert('Use the draw tools to draw a polygon!');
-									}
+							}
 					}
 			}
 			this.drawPolygon=drawPolygon;
@@ -135,7 +135,7 @@ function DivComponent(props) {
 			this.popUp=popUp;
 
 			//Fonction qui change le style de la carte
-			function styleChange(style) {
+			function styleChange() {
 
 				this.inputs.mapboxStyle='mapbox://styles/mapbox/satellite-v9'
 			}
@@ -276,7 +276,7 @@ function DivComponent(props) {
 			displayName: 'Change to satellite view',
 			group: 'Actions',
 			signal() {
-				this.styleChange(this.inputs.mapboxStyle);
+				this.styleChange();
 			}
 		},
 
