@@ -2,9 +2,9 @@ const Noodl = require('@noodl/noodl-sdk');
 import {useRef, useEffect} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-/*import * as turf from '@turf/turf'
+import * as turf from '@turf/turf'
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'*/
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 //import the css using webpack
 //a very simple react component that tells the caller when it's <div> is mounted and unmounted
@@ -50,7 +50,7 @@ function DivComponent(props) {
 				//clear any previous warnings, if any
 				this.clearWarnings();
 			}
-
+			//CRéation constante MAP
 			mapboxgl.accessToken = accessToken;
 			const map = new mapboxgl.Map({
 				container: domElement,
@@ -61,7 +61,7 @@ function DivComponent(props) {
 			});
 			this.map = map;
 
-			/*const draw = new MapboxDraw({
+			const draw = new MapboxDraw({
 			displayControlsDefault: false,
 			controls: {
 			polygon: true,
@@ -91,7 +91,7 @@ function DivComponent(props) {
 							if (e.type !== 'draw.delete')
 							alert('Use the draw tools to draw a polygon!');
 							}
-				}*/
+				}
 
 			map.on('move', () => {
 				this.setOutputs({
@@ -141,6 +141,13 @@ function DivComponent(props) {
 					});
 			}
 			this.flyTo = flyTo;
+
+			//Fonction pour zommer, dézoomrer et rotation
+			function controlMenu() {
+				// Add zoom and rotation controls to the map.
+				map.addControl(new mapboxgl.NavigationControl());
+			}
+			this.controlMenu=controlMenu;
 
 			//Fonction pour naviguer fleche
 			function navigate() {
@@ -254,6 +261,14 @@ function DivComponent(props) {
 			group: 'Actions',
 			signal() {
 				this.styleChange(this.inputs.mapboxStyle);
+			}
+		},
+
+		controlMenu: {
+			displayName: '',
+			group: 'Actions',
+			signal() {
+				this.addPin(this.inputs.longitude, this.inputs.latitude);
 			}
 		},
 
