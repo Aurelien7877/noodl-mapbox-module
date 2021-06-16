@@ -62,6 +62,16 @@ function DivComponent(props) {
 			});
 			this.map = map;
 
+			
+			map.on('move', () => {
+				this.setOutputs({
+					longitude: map.getCenter().lng.toFixed(4),
+					latitude: map.getCenter().lat.toFixed(4),
+					zoom: map.getZoom().toFixed(2)
+				})
+			});
+
+
 			//Essai polygone
 			function drawPolygon() {
 				const draw = new MapboxDraw({
@@ -98,14 +108,6 @@ function DivComponent(props) {
 			}
 			this.drawPolygon=drawPolygon;
 			
-
-			map.on('move', () => {
-				this.setOutputs({
-					longitude: map.getCenter().lng.toFixed(4),
-					latitude: map.getCenter().lat.toFixed(4),
-					zoom: map.getZoom().toFixed(2)
-				})
-			});
 
 			//Fonction de géolocalisation
 			this.geolocate = new mapboxgl.GeolocateControl({
