@@ -6,7 +6,7 @@ import * as turf from '@turf/turf'
 
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-import DrawRectangle, {
+import DrawRectangle, { //Sert pour la solution alternative de draw rectangle
 	DrawStyles,
   } from "mapbox-gl-draw-rectangle-restrict-area";
 
@@ -124,7 +124,9 @@ function DivComponent(props) {
 				map.on('draw.create', updateArea);
 				map.on('draw.delete', updateArea);
 				map.on('draw.update', updateArea);*/
-				var draw = new MapboxDraw({
+
+				//Alternative rectangle
+				/*var draw = new MapboxDraw({
 					userProperties: true,
 					displayControlsDefault: false,
 					styles: DrawStyles,
@@ -142,11 +144,28 @@ function DivComponent(props) {
 					exceedCallsOnEachMove: false, // default false
 					exceedCallback: (area) => console.log("exceeded!", area), // optional
 					areaChangedCallback: (area) => console.log("updated", area), // optional
-				  });
+				  });*/
 			}
 			this.drawPolygon=drawPolygon;
 	
-			//Fonction d'update pour polygone
+
+			//variable de dessin de forme
+			var draw = new MapboxDraw({
+				displayControlsDefault: false,
+				controls: {
+					polygon: true,
+					trash: true
+				},
+				defaultMode: 'draw_polygon'
+			});
+			//On add a la map
+			map.addControl(draw);
+		
+			map.on('draw.create', updateArea);
+			map.on('draw.delete', updateArea);
+			map.on('draw.update', updateArea);
+		
+			//Fonction qui met a jour les formes et les éléments
 			function updateArea(e) {
 				var data = draw.getAll();
 				var answer = document.getElementById('calculated-area');
@@ -157,11 +176,11 @@ function DivComponent(props) {
 					answer.innerHTML =
 					'<p><strong>' +
 					rounded_area +
-					'</strong></p><p>square meters</p>';
+					'</strong></p><p>mètres carrés</p>';
 				} else {
 					answer.innerHTML = '';
 					if (e.type !== 'draw.delete')
-						alert('Use the draw tools to draw a polygon!');
+						alert('Utilisez l outil de selection !');
 				}
 			}
 
