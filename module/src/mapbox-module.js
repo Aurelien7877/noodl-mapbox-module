@@ -75,11 +75,7 @@ function DivComponent(props) {
 			});
 
 
-			// Create a Draw control
-			var draw = new MapboxDraw(drawOptions);
-
-			// Add the Draw control to your map
-			map.addControl(draw);
+			
 			/*Essai polygone
 			function drawPolygon() {
 				this.draw = new MapboxDraw({
