@@ -116,7 +116,7 @@ function DivComponent(props) {
 				},
 				defaultMode: 'draw_polygon'
 				});
-			map.addControl(this.draw);
+			
 	
 			map.on('draw.create', updateArea);
 			map.on('draw.delete', updateArea);
@@ -238,7 +238,7 @@ function DivComponent(props) {
 			this.navigate=navigate;
 
 
-
+			map.addControl(this.draw);
 			map.addControl(this.geolocate);
 
 			map.on('load', () => {
