@@ -66,13 +66,13 @@ function DivComponent(props) {
 			this.map = map;
 
 			
-			map.on('move', () => {
+			/*map.on('move', () => {
 				this.setOutputs({
 					longitude: map.getCenter().lng.toFixed(4),
 					latitude: map.getCenter().lat.toFixed(4),
 					zoom: map.getZoom().toFixed(2)
 				})
-			});
+			});*/
 
 
 			/*Essai polygone
@@ -151,7 +151,7 @@ function DivComponent(props) {
 
 			//variable de dessin de forme
 			var draw = new MapboxDraw({
-				displayControlsDefault: true,
+				displayControlsDefault: false,
 				controls: {
 					polygon: true,
 					trash: true
@@ -173,10 +173,10 @@ function DivComponent(props) {
 					var area = turf.area(data);
 					// restrict to area to 2 decimal points
 					var rounded_area = Math.round(area * 100) / 100;
-					answer.innerHTML =
+					/*answer.innerHTML =
 					'<p><strong>' +
 					rounded_area +
-					'</strong></p><p>mètres carrés</p>';
+					'</strong></p><p>mètres carrés</p>';*/
 				} else {
 					answer.innerHTML = '';
 					if (e.type !== 'draw.delete')
