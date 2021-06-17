@@ -283,9 +283,9 @@ function DivComponent(props) {
 			map.on('load', () => {
 				this.sendSignalOnOutput("mapLoaded");
 			});
-			map.on('load', function() {
+			/*map.on('load', function() {
 				draw.add({});
-			  });
+			});*/
 			  
 		}
 	},
