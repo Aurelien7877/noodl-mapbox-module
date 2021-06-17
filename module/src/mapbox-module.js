@@ -74,84 +74,14 @@ function DivComponent(props) {
 				})
 			});*/
 
-
-			/*Essai polygone
 			function drawPolygon() {
-				this.draw = new MapboxDraw({
-					displayControlsDefault: false,
-					controls: {
-						polygon: true,
-						trash: true
-					},
-					defaultMode: 'draw_polygon'
-					});
-					map.addControl(this.draw);
-		
-					map.on('draw.create', updateArea);
-					map.on('draw.delete', updateArea);
-					map.on('draw.update', updateArea);
-		
-					function updateArea(e) {
-							var data = draw.getAll();
-							var answer = document.getElementById('calculated-area');
-							if (data.features.length > 0) {
-										var area = turf.area(data);
-										// restrict to area to 2 decimal points
-										var rounded_area = Math.round(area * 100) / 100;
-										answer.innerHTML =
-										'<p><strong>' +
-										rounded_area +
-										'</strong></p><p>square meters</p>';
-							} else {
-								answer.innerHTML = '';
-								if (e.type !== 'draw.delete')
-									alert('Use the draw tools to draw a polygon!');
-							}
-					}
-			}
-			this.drawPolygon=drawPolygon;*/
-			function drawPolygon() {
-
-				/*var draw = new MapboxDraw({
-					displayControlsDefault: false,
-					controls: {
-						polygon: true,
-						trash: true
-					},
-					defaultMode: 'draw_polygon'
-				});
-				map.addControl(draw);
-				map.on('draw.create', updateArea);
-				map.on('draw.delete', updateArea);
-				map.on('draw.update', updateArea);*/
-
-				//Alternative rectangle
-				/*var draw = new MapboxDraw({
-					userProperties: true,
-					displayControlsDefault: false,
-					styles: DrawStyles,
-					modes: Object.assign(MapboxDraw.modes, {
-					  draw_rectangle: DrawRectangle,
-					}),
-				  });
-				  map.addControl(draw);
-				  
-				  // when mode drawing should be activated
-				  draw.changeMode("draw_rectangle", {
-					//areaLimit: 10 * 1_000_000, // 5 km2, optional
-					escapeKeyStopsDrawing: true, // default true
-					allowCreateExceeded: false, // default false
-					exceedCallsOnEachMove: false, // default false
-					exceedCallback: (area) => console.log("exceeded!", area), // optional
-					areaChangedCallback: (area) => console.log("updated", area), // optional
-				  });*/
 			}
 			this.drawPolygon=drawPolygon;
 	
 
 			//variable de dessin de forme
 			var draw = new MapboxDraw({
-				displayControlsDefault: false,
+				displayControlsDefault: false, //J'ai testé en true : bug
 				controls: {
 					polygon: true,
 					trash: true
@@ -173,10 +103,7 @@ function DivComponent(props) {
 					var area = turf.area(data);
 					// restrict to area to 2 decimal points
 					var rounded_area = Math.round(area * 100) / 100;
-					/*answer.innerHTML =
-					'<p><strong>' +
-					rounded_area +
-					'</strong></p><p>mètres carrés</p>';*/
+					answer.innerHTML ='<p><strong>' + rounded_area + '</strong></p><p>mètres carrés</p>';
 				} else {
 					answer.innerHTML = '';
 					if (e.type !== 'draw.delete')
