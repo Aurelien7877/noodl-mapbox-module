@@ -103,7 +103,7 @@ function DivComponent(props) {
 					var area = turf.area(data);
 					// restrict to area to 2 decimal points
 					var rounded_area = Math.round(area * 100) / 100;
-					answer.innerHTML ='<p><strong>' + rounded_area + '</strong></p><p>mètres carrés</p>';
+					//answer.innerHTML ='<p><strong>' + rounded_area + '</strong></p><p>mètres carrés</p>';
 				} else {
 					answer.innerHTML = '';
 					if (e.type !== 'draw.delete')
