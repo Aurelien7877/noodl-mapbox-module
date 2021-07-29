@@ -1,16 +1,22 @@
+/** 
+*Company : Sphere Maker Group
+*Authors : Kim HUYNH-KIEU, Aurélien POUXVIEL
+*License : MIT
+*Created : 29/07/2021
+**/
+
 const Noodl = require('@noodl/noodl-sdk');
 import {useRef, useEffect} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-//Importation pour la partie tracer polygone
 import * as turf from '@turf/turf'
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 
-//import the css using webpack
-//a very simple react component that tells the caller when it's <div> is mounted and unmounted
-//defaults to 100% width and height, so wrap in a Group in Noodl to get control over margins, dimensions, etc
+/*import the css using webpack
+a very simple react component that tells the caller when it's <div> is mounted and unmounted
+defaults to 100% width and height, so wrap in a Group in Noodl to get control over margins, dimensions, etc*/
 
 function DivComponent(props) {
 	const ref = useRef(null);
@@ -31,7 +37,7 @@ function DivComponent(props) {
 	},
 
 	initialize() {
-		//wait for the div to mount before we create the map instance
+		/*wait for the div to mount before we create the map instance*/
 		this.props.onDidMount = domElement => {
 			this.initializeMap(domElement);
 		};
@@ -52,7 +58,7 @@ function DivComponent(props) {
 				//clear any previous warnings, if any
 				this.clearWarnings();
 			}
-			//Création constante MAP
+			/* Creation of the map*/
 			mapboxgl.accessToken = accessToken;
 			const map = new mapboxgl.Map({
 				container: domElement,
@@ -63,7 +69,7 @@ function DivComponent(props) {
 			});
 			this.map = map;
 
-			//Fonction de dessin de polygones
+			/*Function to draw polygons */
 			var draw = new MapboxDraw({
 				displayControlsDefault: false,
 				controls: {
@@ -72,14 +78,12 @@ function DivComponent(props) {
 				},
 				defaultMode: 'draw_polygon'
 			});
-			//On add a la map
 			map.addControl(draw);
-			//On crée, supprime, met à jour la forme
 			map.on('draw.create', updateArea);
 			map.on('draw.delete', updateArea);
 			map.on('draw.update', updateArea);
 		
-			//Fonction qui met a jour les formes et les éléments
+			/*Function to update in real time the area */
 			function updateArea(e) {
 				var data = draw.getAll();
 				var answer = document.getElementById('calculated-area');
@@ -87,7 +91,7 @@ function DivComponent(props) {
 					var area = turf.area(data);
 					// restrict to area to 2 decimal points
 					var rounded_area = Math.round(area * 100) / 100;
-					//answer.innerHTML ='<p><strong>' + rounded_area + '</strong></p><p>mètres carrés</p>'; //FAIS BUGER LA FERMETURE DES FORMES
+					//answer.innerHTML ='<p><strong>' + rounded_area + '</strong></p><p>mètres carrés</p>'; Provocates BUG
 				} else {
 					answer.innerHTML = '';
 					if (e.type !== 'draw.delete')
@@ -95,7 +99,7 @@ function DivComponent(props) {
 				}
 			}
 
-			//Fonction de géolocalisation de l'utilisateur
+			/*Function to Geolocate */
 			this.geolocate = new mapboxgl.GeolocateControl({
 				positionOptions: {
 					enableHighAccuracy: true
@@ -103,7 +107,7 @@ function DivComponent(props) {
 				trackUserLocation: true
 			});
 
-			//Fonction pour ajouter un pin sur la carte, aux coord sur NOODL
+			/*Function to add a pin in the Noodl Coords in Inputs */
 			function addPin(long, lat) {
 				var marker = new mapboxgl.Marker()
 					.setLngLat([long, lat])
@@ -111,7 +115,7 @@ function DivComponent(props) {
 			};
 			this.addPin = addPin;
 			
-			//Fonction pour faire apparaitre un PopUp écrivant les coords (celles de NOODL)
+			/*Function to add a popup text at the Noodl coords given by the inputs */
 			function popUp(long,lat) {
 				var fenetre = new mapboxgl.Popup()
 				.setLngLat([long,lat])
@@ -120,14 +124,8 @@ function DivComponent(props) {
 			}
 			this.popUp=popUp;
 
-			//Fonction qui change le style de la carte, ne marche pas 
-			function styleChange() {
 
-				this.inputs.mapboxStyle='mapbox://styles/mapbox/satellite-v9'
-			}
-			this.styleChange = styleChange;
-
-			//Fonction pour centrer la caméra vers les coord rentrées sur NOODL
+			/*Function to center the camera to the Noodl Coords */
 			function flyTo(long, lat) {
 				this.map.flyTo({
 					center: [long, lat],
@@ -136,7 +134,7 @@ function DivComponent(props) {
 			}
 			this.flyTo = flyTo;
 
-			//Fonction pour naviguer avec les fleches. MARCHE DE BASE ??
+			/*Function to navigate with the arrows -> <-*/
 			function navigate() {
 				// pixels the map pans when the up or down arrow is clicked
 				var deltaDistance = 100;
@@ -182,9 +180,9 @@ function DivComponent(props) {
 			}
 			this.navigate=navigate;
 
-			//Fonction qui ajoute 3 boutons de navigations : zoom, dézoom et angles (possible aussi a la souris)
+			/*Function to add 3 buttons of navigation : zoom-in/out and degrees of rotation*/
 			map.addControl(new mapboxgl.NavigationControl());
-			//Ajoute la fonction géolocalisation sur la map
+
 			map.addControl(this.geolocate);
 
 			map.on('load', () => {
@@ -210,48 +208,41 @@ function DivComponent(props) {
 		latitude: {displayName: 'Latitude', type: 'number', group: 'Coordinates', default: 0},
 		zoom: {displayName: 'Zoom', type: 'number', group: 'Coordinates', default: 0},
 	},
-	//Signaux pour faire des send/receive events sur NOODL
 	signals: {
-		centerOnUser: { //Pour géolocalisation
+		/*For the geolocalisation */
+		centerOnUser: { 
 			displayName: 'Center on user',
 			group: 'Actions',
 			signal() {
 				this.geolocate && this.geolocate.trigger();
 			},
 		},
-		addPin: {//Ajouter un pin aux coord de NOODL
+		/*To add a pin */
+		addPin: {
 			displayName: 'Add pin to map',
 			group: 'Actions',
 			signal() {
 				this.addPin(this.inputs.longitude, this.inputs.latitude);
 			}
 		},
-
-		flyTo: {//Centrer la carte aux coord de NOODL
+		/*To center the camera on the localisation*/
+		flyTo: {
 			displayName: 'Pan to location',
 			group: 'Actions',
 			signal() {
 				this.flyTo(this.inputs.longitude, this.inputs.latitude);
 			}
 		},
-
-		popUp: {//Ajouter une fenetre qui écrit les coords de NOODL
+		/*To popup a text */
+		popUp: {
 			displayName: 'Popup Coords',
 			group: 'Actions',
 			signal() {
 				this.popUp(this.inputs.longitude,this.inputs.latitude);
 			}
 		},
-
-		styleChange: {//Changer la carte en style satellite, ne marche PAS
-			displayName: 'Change to satellite view',
-			group: 'Actions',
-			signal() {
-				this.styleChange();
-			}
-		},
-
-		navigate: {//Pour naviguer avec les fleches
+		/*To navigates with arrows*/
+		navigate: {
 			displayName: 'naviguate with -> <-',
 			group: 'Actions',
 			signal() {
